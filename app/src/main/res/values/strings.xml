@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Stepper</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAWp_ZCLvSqofJmcMuLx3z1ovirkx30Mko</string>
+    <string name="publishable_key"></string>
+
+    <string name="pickup_point">Pickup Point</string>
+    <string name="apartment">Apartment</string>
+    <string name="pickup">Pickup</string>
+    <string name="destination">Destination</string>
+    <string name="destination_point">Destination Point</string>
+    <string name="next">Next</string>
+    <string name="need_assembly_55">Need Assembly? ($55)</string>
+    <string name="for_any_clarifications_please_call_us_at_800_560_2168">For any clarifications please call us at 800–560–2168.</string>
+    <string name="pay_now">Pay Now</string>
+    <string name="select_pickup_window">Select pickup window</string>
+    <string name="contact_details">Contact Details</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone">Phone Number</string>
+    <string name="email">Email Address</string>
+    <string name="add_file">Attach proof of purchase / receipt</string>
+    <string name="select_file">Select File</string>
+    <string name="confirm_and_pay">Confirm and Pay</string>
+    <string name="_1_good_guy_you">1 GOOD GUY + YOU</string>
+    <string name="you_do_the_heavy">You do the heavy lifting with one Good Guy, so you can save money. Insurance is not included and you must be able to lift at least 100 lbs. by yourself.</string>
+    <string name="_2_good_guys">2 GOOD GUYS</string>
+    <string name="two_strong_guys">Two strong Good Guys do all the work so you can relax. Includes general liability and cargo insurance.</string>
+    <string name="instant_delivery_description">Every Instant Delivery includes:</string>
+    <string name="inside_delivery_and_placement">\u2022 Inside delivery and placement</string>
+    <string name="trust_verified_good_guy_driver_s_to_load_unload_item">\u2022 Trust-verified Good Guy driver(s) to load/unload item</string>
+    <string name="goods_are_fully_insured_up_to_60_000">\u2022 Goods are fully insured up to $60,000</string>
+    <string name="the_pickup_promise_love_our_work_or_we_ll_make_it_right">\u2022 The PICKUP Promise: Love our work or we\'ll make it right</string>
+    <string name="card_number">Card Number</string>
+    <string name="holder_s_name">Holder\'s Name</string>
+    <string name="expiry">Expiry</string>
+    <string name="cvv">CVV</string>
+    <string name="number_of_pieces">Number of Items</string>
+    <string name="select_furniture">Select Furniture</string>
+    <string name="need_help">Need Help?</string>
+    <string name="step_1_of_4">Step 1 of 4</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="select_furniture_type">Select Furniture Type</string>
+    <string name="estimate_distance_to_destination">Estimate Distance to Destination</string>
+</resources>
