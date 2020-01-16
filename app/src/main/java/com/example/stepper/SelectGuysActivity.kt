@@ -34,18 +34,18 @@ class SelectGuysActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (order != null){
-            if (order!!.twoGoodGuys != null){
-                if (twoGoodGuys){
+        if (order != null) {
+            if (order!!.twoGoodGuys != null) {
+                if (twoGoodGuys) {
                     twoGoodGuys()
                 }
-            } else{
+            } else {
                 oneGoodGuy()
             }
         }
     }
 
-    private fun oneGoodGuy(){
+    private fun oneGoodGuy() {
         card_one_good_guy.setOnClickListener {
             card_one_good_guy.setBackgroundColor(
                 ContextCompat.getColor(
@@ -58,14 +58,16 @@ class SelectGuysActivity : AppCompatActivity() {
 
             one_good_guy_label.setTextColor(Color.WHITE)
             one_good_guy_text.setTextColor(Color.WHITE)
+            one_good_guy_price.setTextColor(Color.WHITE)
 
             card_two_good_guys.setBackgroundColor(Color.WHITE)
             two_good_guys_label.setTextColor(Color.BLACK)
             two_good_guys_text.setTextColor(Color.BLACK)
+            two_good_guys_price.setTextColor(Color.BLACK)
         }
     }
 
-    private fun twoGoodGuys(){
+    private fun twoGoodGuys() {
         card_two_good_guys.setBackgroundColor(
             ContextCompat.getColor(
                 applicationContext,
@@ -77,10 +79,12 @@ class SelectGuysActivity : AppCompatActivity() {
 
         two_good_guys_label.setTextColor(Color.WHITE)
         two_good_guys_text.setTextColor(Color.WHITE)
+        two_good_guys_price.setTextColor(Color.WHITE)
 
         card_one_good_guy.setBackgroundColor(Color.WHITE)
         one_good_guy_label.setTextColor(Color.BLACK)
         one_good_guy_text.setTextColor(Color.BLACK)
+        one_good_guy_price.setTextColor(Color.BLACK)
     }
 
     private fun submitData() {
