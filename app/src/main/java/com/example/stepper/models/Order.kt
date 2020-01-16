@@ -8,12 +8,12 @@ class Order(
     var destinationLocation: String? = null,
     var pickupApartment: String? = null,
     var destinationApartment: String? = null,
-    var pickupStairs: String? = null,
-    var destinationStairs: String? = null,
-    var furniture: String? = null,
+    var pickupStairs: Int? = null,
+    var destinationStairs: Int? = null,
+    var furniture: Int? = null,
     var needAssembly: Boolean? = null,
     var furnitureNumber: String? = null,
-    var distance: String? = null,
+    var distance: Int? = null,
     var twoGoodGuys: Boolean? = null,
     var pickupWindow: String? = null,
     var firstName: String? = null,
@@ -27,12 +27,12 @@ class Order(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
         parcel.readString(),
-        parcel.readString(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
         parcel.readString(),
         parcel.readString(),
@@ -48,12 +48,12 @@ class Order(
         parcel.writeString(destinationLocation)
         parcel.writeString(pickupApartment)
         parcel.writeString(destinationApartment)
-        parcel.writeString(pickupStairs)
-        parcel.writeString(destinationStairs)
-        parcel.writeString(furniture)
+        parcel.writeValue(pickupStairs)
+        parcel.writeValue(destinationStairs)
+        parcel.writeValue(furniture)
         parcel.writeValue(needAssembly)
         parcel.writeString(furnitureNumber)
-        parcel.writeString(distance)
+        parcel.writeValue(distance)
         parcel.writeValue(twoGoodGuys)
         parcel.writeString(pickupWindow)
         parcel.writeString(firstName)

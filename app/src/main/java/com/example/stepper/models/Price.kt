@@ -1,4 +1,5 @@
 package com.example.stepper.models
 
-class Price {
-}
+class Price (
+    var price:Float?=null
+)

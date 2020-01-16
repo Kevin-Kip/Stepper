@@ -2,7 +2,7 @@
     <string name="app_name">Stepper</string>
     <string name="title_activity_maps">Map</string>
 
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAWp_ZCLvSqofJmcMuLx3z1ovirkx30Mko</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyA-3ZovPmahTmrLiuUvSs-5wApDxZGMFeo</string>
     <string name="publishable_key"></string>
 
     <string name="pickup_point">Pickup Point</string>

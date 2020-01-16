@@ -1,24 +1,27 @@
 package com.example.stepper
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
-import com.stripe.android.ApiResultCallback
-import com.stripe.android.Stripe
-import com.stripe.android.model.Card
-import com.stripe.android.model.Token
-import com.stripe.android.view.CardMultilineWidget
+import com.braintreepayments.api.dropin.DropInActivity
+import com.braintreepayments.api.dropin.DropInRequest
+import com.braintreepayments.api.dropin.DropInResult
+import com.loopj.android.http.AsyncHttpClient
+import com.loopj.android.http.RequestParams
+import com.loopj.android.http.TextHttpResponseHandler
 import kotlinx.android.synthetic.main.activity_payment.*
 import org.jetbrains.anko.toast
 
 
 class PaymentActivity : AppCompatActivity() {
 
-    private val publishKey: String = "pk_test_xxxxxxxxxxxxxxxxxxx"
-    private val idempotencyKey: String = ""//TODO get these
-
-    private var cardInput: CardMultilineWidget? = null
+    private val TAG = MainActivity::class.java.simpleName
+    private val PATH_TO_SERVER = "PATH_TO_SERVER"
+    private var clientToken: String? = null
+    private val BRAINTREE_REQUEST_CODE = 4949
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,35 +30,78 @@ class PaymentActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        cardInput = findViewById(R.id.card_input)
-        pay_now.setOnClickListener { makePayment() }
+        createToken()
+        pay_now.setOnClickListener {
+            onBraintreeSubmit()
+        }
     }
 
-    private fun makePayment() {
-        val card: Card? = cardInput?.card
-        if (card == null) {
-            Toast.makeText(applicationContext, "Invalid card", Toast.LENGTH_SHORT).show()
-        } else {
-            if (!card.validateCard()) { // Do not continue token creation.
-                Toast.makeText(applicationContext, "Invalid card", Toast.LENGTH_SHORT).show()
+    private fun createToken() {
+        val androidClient = AsyncHttpClient()
+        androidClient.get(PATH_TO_SERVER, object : TextHttpResponseHandler() {
+
+            override fun onSuccess(
+                statusCode: Int,
+                headers: Array<out cz.msebera.android.httpclient.Header>?,
+                responseString: String?
+            ) {
+                clientToken = responseString
+            }
+
+            override fun onFailure(
+                statusCode: Int,
+                headers: Array<out cz.msebera.android.httpclient.Header>?,
+                responseString: String?,
+                throwable: Throwable?
+            ) {
+
+            }
+        })
+    }
+
+    private fun onBraintreeSubmit() {
+        val dropInRequest = DropInRequest().clientToken(clientToken)
+        startActivityForResult(dropInRequest.getIntent(this), BRAINTREE_REQUEST_CODE)
+    }
+
+    private fun onActivityResult(requestCode: Int?, resultCode: Int?, data: Intent?) {
+        super.onActivityResult(requestCode!!, resultCode!!, data)
+        if (requestCode == BRAINTREE_REQUEST_CODE) {
+            if (Activity.RESULT_OK == resultCode) {
+                val result: DropInResult =
+                    data!!.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT)!!
+                val paymentNonce = result.paymentMethodNonce!!.nonce
+                //send to your server
+                Log.d(TAG, "Testing the app here")
+                sendPaymentNonceToServer(paymentNonce)
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.d(TAG, "User cancelled payment")
             } else {
-                createToken(card)
+                val error = data!!.getSerializableExtra(DropInActivity.EXTRA_ERROR) as Exception
+                Log.d(TAG, " error exception")
             }
         }
     }
 
-    private fun createToken(card: Card) {
-        val stripe = Stripe(applicationContext, publishKey)
-        stripe.createCardToken(card, idempotencyKey, object : ApiResultCallback<Token> {
-            override fun onSuccess(result: Token) {
-                toast("Token created successfully")
-                chargeCard(result.id)
+    private fun sendPaymentNonceToServer(paymentNonce: String) {
+        val params = RequestParams("NONCE", paymentNonce)
+        val androidClient = AsyncHttpClient()
+        androidClient.post(PATH_TO_SERVER, params, object : TextHttpResponseHandler() {
+            override fun onSuccess(
+                statusCode: Int,
+                headers: Array<out cz.msebera.android.httpclient.Header>?,
+                responseString: String?
+            ) {
+                toast("Payment sent successfully")
             }
 
-            override fun onError(e: Exception) {
-                Snackbar.make(payment_parent, "Unable to create token", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("OK") {}
-                    .show()
+            override fun onFailure(
+                statusCode: Int,
+                headers: Array<out cz.msebera.android.httpclient.Header>?,
+                responseString: String?,
+                throwable: Throwable?
+            ) {
+
             }
         })
     }

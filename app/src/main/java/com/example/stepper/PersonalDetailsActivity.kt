@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.stepper.models.Deliveries
 import com.example.stepper.models.Order
 import com.example.stepper.utils.Commons
 import com.example.stepper.utils.FilePath
@@ -27,6 +28,7 @@ import kotlinx.android.synthetic.main.item_notification.view.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.getStackTraceString
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -37,9 +39,35 @@ import java.io.File
 
 class PersonalDetailsActivity : AppCompatActivity() {
 
+    private var hasOwnerShip = "No"
     private var order: Order? = null
     private val windows =
         listOf("7-8 a.m", "8-9 a.m", "1-2 pm", "3-4 pm")
+
+    private val furnitures = listOf(
+        "Sofa or Loveseat or Recliner",
+        "Boxed items (up to 4 “3x3 boxes”) ",
+        "Area Rugs (up to 3 rugs)",
+        "Hardwood / Laminate / Vinyl Flooring (up to 350lb)",
+        "Hardwood / Laminate / Vinyl Flooring (up to 700lb)",
+        "Ottoman or Single Person Chair ",
+        "Sectional (up to 4 pieces)",
+        "Dining Room Set (table and up to 6 chairs)",
+        "Patio Furniture Set (table and up to 6 chairs) ",
+        "Outdoor Grill or Smoker ",
+        "Mattress/Boxspring Set (Queen or King)",
+        "Mattress/Boxspring Set (Twin or Full)",
+        "Bedroom Set (Frame or Headboard or Footboard)",
+        "Bedroom Set (Nightstand up to 2)",
+        "Dresser / Entertainment Stand",
+        "Appliances (Washer or Dryer)",
+        "Appliances (Refrigerator)",
+        "Appliances (Stove or Dishwasher)",
+        "Miscellaneous Large Item 51lb or more",
+        "Miscellaneous Small Item 50lb or less",
+        "Roll of Carpet (up to 350lb)",
+        "Roll of Carpet (up to 700lb)"
+    )
 
     private val selectedFiles = mutableListOf<File>()
     private val selectedFileUris = mutableListOf<Uri>()
@@ -144,6 +172,7 @@ class PersonalDetailsActivity : AppCompatActivity() {
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
+                hasOwnerShip = "Yes"
                 selectedFileUris.add(data.data!!)
                 val fullPath: String = FilePath.getPath(this@PersonalDetailsActivity, data.data)
                 val f = File(fullPath)
@@ -164,6 +193,7 @@ class PersonalDetailsActivity : AppCompatActivity() {
     private fun uploadFiles() {
         val filesToSend = ArrayList<MultipartBody.Part>()
         selectedFileUris.forEach {
+            furnitures
             filesToSend.add(prepareFilePart("attachments[]", it))
         }
 //        apiService?.uploadFiles(filesToSend, uuid, "${token?.type} ${token?.token}")!!
@@ -256,12 +286,32 @@ class PersonalDetailsActivity : AppCompatActivity() {
                 firstName = first_name_input.text.toString()
                 lastName = last_name_input.text.toString()
                 pickupWindow = windows[pickup_window.selectedIndex]
-//                hasProofOfOwnerShip =
+                hasProofOfOwnerShip = hasOwnerShip
             }
-            val i = Intent(this@PersonalDetailsActivity, PaymentActivity::class.java)
-            i.putExtra(Commons.ORDER, order)
-            startActivity(i)
-            overridePendingTransition(R.anim.right_to_left_enter, R.anim.left_to_right_enter)
+
+            var needsAssembly = if (order!!.needAssembly!!) {
+                "Yes"
+            } else {
+                "No"
+            }
+
+            alert {
+                title = "Order Summary"
+                message = "${furnitures[order?.furniture?.minus(1)!!]} \n" +
+                        "From: ${order?.pickupLocation} \n" +
+                        "To: ${order?.destinationLocation} \n" +
+                        "Needs Assembly: $needsAssembly"
+                positiveButton("PAY") { di ->
+                    val i = Intent(this@PersonalDetailsActivity, PaymentActivity::class.java)
+                    i.putExtra(Commons.ORDER, order)
+                    startActivity(i)
+                    overridePendingTransition(
+                        R.anim.right_to_left_enter,
+                        R.anim.left_to_right_enter
+                    )
+                }
+                negativeButton("CANCEL") { di2 -> di2.dismiss() }
+            }.show()
         }
     }
 
