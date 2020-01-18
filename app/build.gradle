@@ -40,11 +40,17 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
-    implementation 'morxander.editcard:EditCard:1.0.1'
+//    implementation 'morxander.editcard:EditCard:1.0.1'
 
+    implementation 'com.paypal.sdk:paypal-android-sdk:2.15.3'
+
+//    implementation 'com.loopj.android:android-async-http:1.4.9'
+//    implementation 'com.braintreepayments.api:braintree:3.7.1'
+//    implementation 'com.braintreepayments.api:drop-in:3.7.1'
+
+    implementation 'com.braintreepayments.api:braintree:2.0.1'
+    implementation 'com.braintreepayments.api:drop-in:2.0.1'
     implementation 'com.loopj.android:android-async-http:1.4.9'
-    implementation 'com.braintreepayments.api:braintree:2.+'
-    implementation 'com.braintreepayments.api:drop-in:3.7.1'
 
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'org.jetbrains.anko:anko-commons:0.10.8'
@@ -58,3 +64,4 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+
