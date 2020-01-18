@@ -3,7 +3,6 @@
     <string name="title_activity_maps">Map</string>
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyA-3ZovPmahTmrLiuUvSs-5wApDxZGMFeo</string>
-    <string name="publishable_key"></string>
 
     <string name="pickup_point">Pickup Point</string>
     <string name="apartment">Apartment</string>
@@ -11,7 +10,7 @@
     <string name="destination">Destination</string>
     <string name="destination_point">Destination Point</string>
     <string name="next">Next</string>
-    <string name="need_assembly_55">Need Assembly? ($55)</string>
+    <string name="need_assembly_55">Need Assembly? ($75)</string>
     <string name="for_any_clarifications_please_call_us_at_800_560_2168">For any clarifications please call us at 800–560–2168.</string>
     <string name="pay_now">Pay Now</string>
     <string name="select_pickup_window">Select pickup window</string>
@@ -43,4 +42,5 @@
     <string name="last_name">Last Name</string>
     <string name="select_furniture_type">Select Furniture Type</string>
     <string name="estimate_distance_to_destination">Estimate Distance to Destination</string>
+    <string name="_500">500</string>
 </resources>

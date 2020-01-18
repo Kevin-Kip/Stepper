@@ -3,43 +3,26 @@ package com.example.stepper
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stepper.models.Deliveries
 import com.example.stepper.models.Distance
 import com.example.stepper.models.Order
 import com.example.stepper.utils.Commons
+import com.revosleap.simpleadapter.SimpleAdapter
+import com.revosleap.simpleadapter.SimpleCallbacks
 import kotlinx.android.synthetic.main.activity_select_furniture.*
+import kotlinx.android.synthetic.main.item_selected_furniture.*
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 
 class SelectFurnitureActivity : AppCompatActivity() {
 
     private var order: Order? = null
-    private var needsAssembly = false
-    private val furnitures = listOf(
-        Deliveries(1, "Sofa or Loveseat or Recliner"),
-        Deliveries(2, "Boxed items (up to 4 “3x3 boxes”) "),
-        Deliveries(3, "Area Rugs (up to 3 rugs)"),
-        Deliveries(4, "Hardwood / Laminate / Vinyl Flooring (up to 350lb)"),
-        Deliveries(5, "Hardwood / Laminate / Vinyl Flooring (up to 700lb)"),
-        Deliveries(6, "Ottoman or Single Person Chair "),
-        Deliveries(7, "Sectional (up to 4 pieces)"),
-        Deliveries(8, "Dining Room Set (table and up to 6 chairs)"),
-        Deliveries(9, "Patio Furniture Set (table and up to 6 chairs) "),
-        Deliveries(10, "Outdoor Grill or Smoker "),
-        Deliveries(11, "Mattress/Boxspring Set (Queen or King)"),
-        Deliveries(12, "Mattress/Boxspring Set (Twin or Full)"),
-        Deliveries(13, "Bedroom Set (Frame or Headboard or Footboard)"),
-        Deliveries(14, "Bedroom Set (Nightstand up to 2)"),
-        Deliveries(15, "Dresser / Entertainment Stand"),
-        Deliveries(16, "Appliances (Washer or Dryer)"),
-        Deliveries(17, "Appliances (Refrigerator)"),
-        Deliveries(18, "Appliances (Stove or Dishwasher)"),
-        Deliveries(19, "Miscellaneous Large Item 51lb or more"),
-        Deliveries(20, "Miscellaneous Small Item 50lb or less"),
-        Deliveries(21, "Roll of Carpet (up to 350lb)"),
-        Deliveries(22, "Roll of Carpet (up to 700lb)")
-    )
-
+    private var furnitureList = mutableListOf<Deliveries>()
     private val furnitureNames = listOf(
         "Sofa or Loveseat or Recliner",
         "Boxed items (up to 4 “3x3 boxes”) ",
@@ -65,78 +48,103 @@ class SelectFurnitureActivity : AppCompatActivity() {
         "Roll of Carpet (up to 700lb)"
     )
 
-    private val distances = listOf(
-        Distance(1, "1-5"),
-        Distance(2, "6-10"),
-        Distance(3, "11-15"),
-        Distance(4, "21-30")
-    )
+    private var simpleAdapter: SimpleAdapter? = null
+    private val simpleCallbacks = object : SimpleCallbacks {
+        override fun bindView(view: View, item: Any, position: Int) {
+            item as Deliveries
 
-    private val distanceNames = listOf(
-        "1-5",
-        "6-10",
-        "11-15",
-        "21-30"
-    )
+            item_name.text = item.description
+            item_price.text = "$${item.price!!.times(item.price!!)}"
+            item_count.text = (item.count).toString()
+
+            item_plus.setOnClickListener {
+                if (item.count!! < item.limit!!) {
+                    item.count = item.count!! + 1
+                } else if (item.count!! == item.limit){
+                    toast("Cannot exceed ${item.count} for this item")
+                }
+                item_count.text = (item.count).toString()
+                item_price.text = "$${item.price!!.times(item.price!!)}"
+            }
+
+            item_minus.setOnClickListener {
+                if (item.count!! > 1) {
+                    item.count = item.count!! - 1
+                }
+                item_count.text = (item.count).toString()
+                item_price.text = "$${item.price!!.times(item.price!!)}"
+            }
+
+            item_remove.setOnClickListener {
+                val thisItem = furnitureList.find {
+                    it.description == item.description
+                }
+                furnitureList.remove(thisItem)
+                simpleAdapter?.removeItem(thisItem as Any)
+            }
+        }
+
+        override fun onViewClicked(view: View, item: Any, position: Int) {
+
+        }
+
+        override fun onViewLongClicked(it: View?, item: Any, position: Int) {
+
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_furniture)
-
-        order = intent.getParcelableExtra(Commons.ORDER) as Order
-
-        needs_assembly.setOnCheckedChangeListener { group, checkedId ->
-            needsAssembly = when (checkedId) {
-                R.id.needs_assembly_yes -> true
-                else -> false
-            }
-        }
-
-        furniture.setItems(furnitureNames)
-        distance.setItems(distanceNames)
-
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        order = intent.getSerializableExtra(Commons.ORDER) as Order
+
+        furniture.setItems(furnitureNames)
+        simpleAdapter = SimpleAdapter(R.layout.item_selected_furniture, simpleCallbacks)
+        selected_furniture.apply {
+            adapter = simpleAdapter
+            layoutManager = LinearLayoutManager(applicationContext)
+            hasFixedSize()
+            itemAnimator = DefaultItemAnimator()
+        }
         button_next.setOnClickListener {
             submitData()
+        }
+
+        selectFurniture()
+    }
+
+    private fun selectFurniture() {
+        furniture.setOnItemSelectedListener { _, _, _, name ->
+            val item: Deliveries = Commons.furnitures.find { f ->
+                f.description == name
+            }!!
+            if (!furnitureList.contains(item)) {
+                simpleAdapter?.addItem(item)
+                furnitureList.add(item)
+            } else{
+                toast("Item already exists in your selection")
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
         if (order != null) {
-//            if (order!!.furniture != null) {
-//                val index = furnitures.indexOf(Deliveries(order!!.furniture))
-//                furniture.selectedIndex = index
-//            }
-//            if (order!!.distance != null) {
-//                val index = distances.indexOf(Distance(order!!.distance))
-//                distance.selectedIndex = index
-//            }
-            if (order!!.furnitureNumber != null) {
-                furniture_number_input.setText(
-                    order!!.furnitureNumber,
-                    TextView.BufferType.EDITABLE
-                )
-            }
-
-            if (needsAssembly) {
-                needs_assembly_no.isChecked = false
-                needs_assembly_yes.isChecked = true
-            } else {
-                needs_assembly_yes.isChecked = false
-                needs_assembly_no.isChecked = true
+            if (order!!.furniture != null) {
+                if (order!!.furniture!!.isNotEmpty()) {
+                    furnitureList = order!!.furniture!!
+                    simpleAdapter!!.changeItems(order!!.furniture as MutableList<Any>)
+                }
             }
         }
     }
 
     private fun submitData() {
         if (order != null) {
-            order!!.distance = distances[distance.selectedIndex].id
-            order!!.furniture = furnitures[furniture.selectedIndex].id
-            order!!.furnitureNumber = furniture_number_input.text.toString()
-            order!!.needAssembly = needsAssembly
+            order!!.furniture = furnitureList
             val i = Intent(this@SelectFurnitureActivity, SelectGuysActivity::class.java)
             i.putExtra(Commons.ORDER, order)
             startActivity(i)

@@ -26,16 +26,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private var pickupLocation: String? = null
     private var destinationLocation: String? = null
-    private val stairs =
-        listOf(
-            Stairs(1, "1 flight"),
-            Stairs(2, "2 flights"),
-            Stairs(3, "3 flights"),
-            Stairs(4, "4 flights"),
-            Stairs(5, "5 flights"),
-            Stairs(6, "6 flights"),
-            Stairs(7, "No flight")
-        )
 
     private val stairNames =
         listOf(
@@ -114,8 +104,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         order.destinationLocation = destinationLocation
         order.pickupApartment = pickup_apartment_input.text.toString()
         order.destinationApartment = destination_apartment_input.text.toString()
-        order.pickupStairs = stairs[pickup_stairs_input.selectedIndex].id
-        order.destinationStairs = stairs[destination_stairs_input.selectedIndex].id
+        order.pickupStairs = Commons.stairs[pickup_stairs_input.selectedIndex]
+        order.destinationStairs = Commons.stairs[destination_stairs_input.selectedIndex]
 
         val i = Intent(this@MainActivity, SelectFurnitureActivity::class.java)
         i.putExtra(Commons.ORDER, order)
@@ -125,7 +115,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        val order = intent.getParcelableExtra(Commons.ORDER) as Order?
+        val order = intent.getSerializableExtra(Commons.ORDER) as Order?
         if (order != null) {
             if (order!!.pickupLocation != null) {
                 pickupLocation = order!!.pickupLocation
@@ -146,12 +136,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
             }
             if (order!!.pickupStairs != null) {
-                val index = stairs.indexOf(Stairs(order!!.pickupStairs!!))
-                pickup_stairs_input.selectedIndex = index
+//                val index = Commons.stairs.indexOf(Stairs(order!!.pickupStairs!!))
+//                pickup_stairs_input.selectedIndex = index
             }
             if (order!!.destinationStairs != null) {
-                val index = stairs.indexOf(Stairs(order!!.destinationStairs!!))
-                destination_stairs_input.selectedIndex = index
+//                val index = Commons.stairs.indexOf(Stairs(order!!.destinationStairs!!))
+//                destination_stairs_input.selectedIndex = index
             }
         }
     }

@@ -22,7 +22,7 @@ class SelectGuysActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        order = intent.getParcelableExtra(Commons.ORDER) as Order
+        order = intent.getSerializableExtra(Commons.ORDER) as Order
 
         button_next.setOnClickListener {
             submitData()
@@ -90,7 +90,7 @@ class SelectGuysActivity : AppCompatActivity() {
     private fun submitData() {
         if (order != null) {
             order!!.twoGoodGuys = twoGoodGuys
-            val i = Intent(this@SelectGuysActivity, PersonalDetailsActivity::class.java)
+            val i = Intent(this@SelectGuysActivity, SelectDistanceActivity::class.java)
             i.putExtra(Commons.ORDER, order)
             startActivity(i)
             overridePendingTransition(R.anim.right_to_left_enter, R.anim.left_to_right_enter)

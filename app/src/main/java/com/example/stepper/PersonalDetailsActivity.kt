@@ -15,7 +15,9 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.stepper.models.Deliveries
+import com.example.stepper.models.Distance
 import com.example.stepper.models.Order
+import com.example.stepper.models.Stairs
 import com.example.stepper.utils.Commons
 import com.example.stepper.utils.FilePath
 import com.google.android.material.snackbar.Snackbar
@@ -118,7 +120,7 @@ class PersonalDetailsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        order = intent.getParcelableExtra(Commons.ORDER) as Order
+        order = intent.getSerializableExtra(Commons.ORDER) as Order
         simpleAdapter = SimpleAdapter(R.layout.item_notification, simpleCallbacks)
 
         select_file.setOnClickListener { selectFile() }
@@ -289,21 +291,23 @@ class PersonalDetailsActivity : AppCompatActivity() {
                 hasProofOfOwnerShip = hasOwnerShip
             }
 
-            var needsAssembly = if (order!!.needAssembly!!) {
+            val needsAssembly = if (order!!.needAssembly!!) {
                 "Yes"
             } else {
                 "No"
             }
 
+            val price: Float = getPrice(order)
+
             alert {
                 title = "Order Summary"
-                message = "${furnitures[order?.furniture?.minus(1)!!]} \n" +
+                message = "${(order?.furniture)!!.size} Items \n" +
                         "From: ${order?.pickupLocation} \n" +
                         "To: ${order?.destinationLocation} \n" +
                         "Needs Assembly: $needsAssembly"
-                positiveButton("PAY") { di ->
+                positiveButton("PAY $price") { di ->
                     val i = Intent(this@PersonalDetailsActivity, PaymentActivity::class.java)
-                    i.putExtra(Commons.ORDER, order)
+                    i.putExtra(Commons.PRICE, price)
                     startActivity(i)
                     overridePendingTransition(
                         R.anim.right_to_left_enter,
@@ -313,6 +317,30 @@ class PersonalDetailsActivity : AppCompatActivity() {
                 negativeButton("CANCEL") { di2 -> di2.dismiss() }
             }.show()
         }
+    }
+
+    private fun getPrice(order: Order?): Float {
+        var basePrice = 0F
+        //Get furniture price
+        order!!.furniture!!.forEach { item ->
+            basePrice += (item.price!!).times(item.count!!)
+        }
+        //Get distance price
+        basePrice += (order.distance)!!.price!!
+        //Pickup stairs
+        basePrice += (order.pickupStairs)!!.price!!
+        //Destination stairs
+        basePrice += (order.destinationStairs)!!.price!!
+        //Assembly required
+        basePrice += when (order.twoGoodGuys) {
+            true -> 75
+            else -> 0
+        }
+        //good guys price
+        val goodGuysPrice: Float = basePrice.times(0.1F)
+        basePrice += goodGuysPrice
+
+        return basePrice
     }
 
     override fun onSupportNavigateUp(): Boolean {
