@@ -13,10 +13,10 @@ class SelectDistanceActivity : AppCompatActivity() {
     private var order: Order? = null
 
     private val distanceNames = listOf(
-        "1-5",
-        "6-10",
-        "11-15",
-        "21-30"
+        "1-5 miles",
+        "6-10 miles",
+        "11-15 miles",
+        "21-30 miles"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

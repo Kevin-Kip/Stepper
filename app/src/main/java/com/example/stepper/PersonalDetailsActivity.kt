@@ -298,6 +298,7 @@ class PersonalDetailsActivity : AppCompatActivity() {
             }
 
             val price: Float = getPrice(order)
+            order?.price = price
 
             alert {
                 title = "Order Summary"
@@ -305,9 +306,9 @@ class PersonalDetailsActivity : AppCompatActivity() {
                         "From: ${order?.pickupLocation} \n" +
                         "To: ${order?.destinationLocation} \n" +
                         "Needs Assembly: $needsAssembly"
-                positiveButton("PAY $price") { di ->
+                positiveButton("PAY") { di ->
                     val i = Intent(this@PersonalDetailsActivity, PaymentActivity::class.java)
-                    i.putExtra(Commons.PRICE, price)
+                    i.putExtra(Commons.ORDER, order)
                     startActivity(i)
                     overridePendingTransition(
                         R.anim.right_to_left_enter,
@@ -320,27 +321,31 @@ class PersonalDetailsActivity : AppCompatActivity() {
     }
 
     private fun getPrice(order: Order?): Float {
-        var basePrice = 0F
+        var currentPrice = 0F
+        var basePrice = 45F
         //Get furniture price
         order!!.furniture!!.forEach { item ->
-            basePrice += (item.price!!).times(item.count!!)
+            currentPrice += (item.price!!).times(item.count!!)
         }
         //Get distance price
-        basePrice += (order.distance)!!.price!!
+        currentPrice += (order.distance)!!.price!!
         //Pickup stairs
-        basePrice += (order.pickupStairs)!!.price!!
+        currentPrice += (order.pickupStairs)!!.price!!
         //Destination stairs
-        basePrice += (order.destinationStairs)!!.price!!
+        currentPrice += (order.destinationStairs)!!.price!!
         //Assembly required
-        basePrice += when (order.twoGoodGuys) {
+        currentPrice += when (order.twoGoodGuys) {
             true -> 75
             else -> 0
         }
         //good guys price
-        val goodGuysPrice: Float = basePrice.times(0.1F)
-        basePrice += goodGuysPrice
+        val goodGuysPrice: Float = currentPrice.times(0.1F)
+        currentPrice += goodGuysPrice
 
-        return basePrice
+        if (currentPrice < basePrice) {
+            return basePrice
+        }
+        return currentPrice
     }
 
     override fun onSupportNavigateUp(): Boolean {

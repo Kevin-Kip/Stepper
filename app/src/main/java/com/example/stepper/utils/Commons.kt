@@ -67,8 +67,8 @@ object Commons {
 
     val furnitures = listOf(
         Deliveries(1, "Sofa or Loveseat or Recliner",45F),
-        Deliveries(2, "Boxed items (up to 4 “3x3 boxes”) ",45F,limit = 3),
-        Deliveries(3, "Area Rugs (up to 3 rugs)",55F),
+        Deliveries(2, "Boxed items (up to 4 “3x3 boxes”) ",45F,limit = 4),
+        Deliveries(3, "Area Rugs (up to 3 rugs)",55F,limit = 3),
         Deliveries(4, "Hardwood / Laminate / Vinyl Flooring (up to 350lb)",125F),
         Deliveries(5, "Hardwood / Laminate / Vinyl Flooring (up to 700lb)",175F),
         Deliveries(6, "Hardwood / Laminate / Vinyl Flooring (up to 1500lb)",225F),

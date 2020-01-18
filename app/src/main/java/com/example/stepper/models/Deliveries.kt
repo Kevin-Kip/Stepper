@@ -6,6 +6,6 @@ class Deliveries(
     var id: Int? = null,
     var description: String? = null,
     var price:Float?=null,
-    var count:Int?=null,
+    var count:Int=1,
     var limit:Int?=null
 ):Serializable

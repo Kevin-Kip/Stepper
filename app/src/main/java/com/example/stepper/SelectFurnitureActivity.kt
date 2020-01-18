@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -52,30 +53,42 @@ class SelectFurnitureActivity : AppCompatActivity() {
     private val simpleCallbacks = object : SimpleCallbacks {
         override fun bindView(view: View, item: Any, position: Int) {
             item as Deliveries
+            val itemName = view.findViewById<TextView>(R.id.item_name)
+            val itemPrice = view.findViewById<TextView>(R.id.item_price)
+            val itemCount = view.findViewById<TextView>(R.id.item_count)
+            val itemMinus = view.findViewById<ImageButton>(R.id.item_minus)
+            val itemPlus = view.findViewById<ImageButton>(R.id.item_plus)
+            val itemRemove = view.findViewById<ImageButton>(R.id.item_remove)
 
-            item_name.text = item.description
-            item_price.text = "$${item.price!!.times(item.price!!)}"
-            item_count.text = (item.count).toString()
+            itemName.text = item.description
+            itemPrice.text = "$${item.price!!.times(item.count!!)}"
+            itemCount.text = (item.count).toString()
 
-            item_plus.setOnClickListener {
-                if (item.count!! < item.limit!!) {
+            itemPlus.setOnClickListener {
+                if (item.limit != null) {
+                    if (item.count < item.limit!!) {
+                        item.count = item.count!! + 1
+                    } else if (item.count!! == item.limit) {
+                        toast("Cannot exceed ${item.count} for this item")
+                    }
+                }else{
                     item.count = item.count!! + 1
-                } else if (item.count!! == item.limit){
-                    toast("Cannot exceed ${item.count} for this item")
                 }
-                item_count.text = (item.count).toString()
-                item_price.text = "$${item.price!!.times(item.price!!)}"
+                itemCount.text = (item.count).toString()
+                itemPrice.text = "$${item.price!!.times(item.count!!)}"
             }
 
-            item_minus.setOnClickListener {
+            itemMinus.setOnClickListener {
                 if (item.count!! > 1) {
                     item.count = item.count!! - 1
+                } else{
+                    toast("Cannot add less than one item")
                 }
-                item_count.text = (item.count).toString()
-                item_price.text = "$${item.price!!.times(item.price!!)}"
+                itemCount.text = (item.count).toString()
+                itemPrice.text = "$${item.price!!.times(item.count!!)}"
             }
 
-            item_remove.setOnClickListener {
+            itemRemove.setOnClickListener {
                 val thisItem = furnitureList.find {
                     it.description == item.description
                 }
@@ -124,7 +137,7 @@ class SelectFurnitureActivity : AppCompatActivity() {
             if (!furnitureList.contains(item)) {
                 simpleAdapter?.addItem(item)
                 furnitureList.add(item)
-            } else{
+            } else {
                 toast("Item already exists in your selection")
             }
         }

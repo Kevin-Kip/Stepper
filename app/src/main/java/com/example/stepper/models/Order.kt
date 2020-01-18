@@ -18,5 +18,6 @@ class Order(
     var email: String? = null,
     var phone: String? = null,
     var hasProofOfOwnerShip: String? = null,
-    var furniture: MutableList<Deliveries>? = null
+    var furniture: MutableList<Deliveries>? = null,
+    var price:Float? = null
 ):Serializable

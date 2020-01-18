@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.braintreepayments.api.dropin.DropInActivity
 import com.braintreepayments.api.dropin.DropInRequest
 import com.braintreepayments.api.dropin.DropInResult
+import com.example.stepper.models.Order
+import com.example.stepper.utils.Commons
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.RequestParams
 import com.loopj.android.http.TextHttpResponseHandler
@@ -22,17 +24,26 @@ class PaymentActivity : AppCompatActivity() {
     private val PATH_TO_SERVER = "PATH_TO_SERVER"
     private var clientToken: String? = null
     private val BRAINTREE_REQUEST_CODE = 4949
+    private var order: Order? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_payment)
-
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        createToken()
-        pay_now.setOnClickListener {
-            onBraintreeSubmit()
+        order = intent.getSerializableExtra(Commons.ORDER) as Order
+        if (order != null) {
+            pay_now.text = "PAY $${order?.price}"
+
+            createToken()
+            pay_now.setOnClickListener {
+                onBraintreeSubmit()
+            }
+        } else{
+            toast("Order cannot be null. Fill in all selections")
+            finish()
         }
     }
 
