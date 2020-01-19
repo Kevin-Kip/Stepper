@@ -43,4 +43,5 @@
     <string name="select_furniture_type">Select Furniture Type</string>
     <string name="estimate_distance_to_destination">Estimate Distance to Destination</string>
     <string name="_500">500</string>
+    <string name="order_summary">Order Summary</string>
 </resources>

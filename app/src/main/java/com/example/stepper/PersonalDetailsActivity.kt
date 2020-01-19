@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import com.example.stepper.fragments.OrderSummary
 import com.example.stepper.models.Deliveries
 import com.example.stepper.models.Distance
 import com.example.stepper.models.Order
@@ -332,6 +333,7 @@ class PersonalDetailsActivity : AppCompatActivity() {
                     last_name_parent.isErrorEnabled = true
                     last_name_parent.error = "Please provide last name"
                 }
+                return
             }
 
             order!!.phone = phone
@@ -341,32 +343,14 @@ class PersonalDetailsActivity : AppCompatActivity() {
             order!!.pickupWindow = windows[pickup_window.selectedIndex]
             order!!.hasProofOfOwnerShip = hasOwnerShip
 
-            val needsAssembly = if (order!!.needAssembly!!) {
-                "Yes"
-            } else {
-                "No"
-            }
-
             val price: Float = getPrice(order)
             order?.price = price
 
-            alert {
-                title = "Order Summary"
-                message = "${(order?.furniture)!!.size} Items \n" +
-                        "From: ${order?.pickupLocation} \n" +
-                        "To: ${order?.destinationLocation} \n" +
-                        "Needs Assembly: $needsAssembly"
-                positiveButton("PAY") { di ->
-                    val i = Intent(this@PersonalDetailsActivity, PaymentActivity::class.java)
-                    i.putExtra(Commons.ORDER, order)
-                    startActivity(i)
-                    overridePendingTransition(
-                        R.anim.right_to_left_enter,
-                        R.anim.left_to_right_enter
-                    )
-                }
-                negativeButton("CANCEL") { di2 -> di2.dismiss() }
-            }.show()
+            val orderSummary = OrderSummary()
+            val bundle = Bundle()
+            bundle.putSerializable(Commons.ORDER, order)
+            orderSummary.arguments = bundle
+            orderSummary.show(supportFragmentManager, orderSummary.tag)
         }
     }
 
