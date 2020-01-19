@@ -51,6 +51,7 @@ open class PaymentActivity : AppCompatActivity() {
         getClientToken()
     }
 
+
     private fun getClientToken() {
         mClient = AsyncHttpClient()
         mClient?.get(

@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import com.example.stepper.models.Deliveries
 import com.example.stepper.models.Distance
 import com.example.stepper.models.Order
@@ -129,6 +130,30 @@ class PersonalDetailsActivity : AppCompatActivity() {
             submitData()
         }
         pickup_window.setItems(windows)
+        initListeners()
+    }
+
+    private fun initListeners() {
+        phone_input.addTextChangedListener { input ->
+            if (input.toString().isNotEmpty()) {
+                phone_parent.isErrorEnabled = false
+            }
+        }
+        email_input.addTextChangedListener { input ->
+            if (input.toString().isNotEmpty()) {
+                email_parent.isErrorEnabled = false
+            }
+        }
+        first_name_input.addTextChangedListener { input ->
+            if (input.toString().isNotEmpty()) {
+                first_name_parent.isErrorEnabled = false
+            }
+        }
+        last_name_input.addTextChangedListener { input ->
+            if (input.toString().isNotEmpty()) {
+                last_name_parent.isErrorEnabled = false
+            }
+        }
     }
 
     private fun selectFile() {
@@ -282,14 +307,39 @@ class PersonalDetailsActivity : AppCompatActivity() {
 
     private fun submitData() {
         if (order != null) {
-            order!!.apply {
-                phone = phone_input.text.toString()
-                email = email_input.text.toString()
-                firstName = first_name_input.text.toString()
-                lastName = last_name_input.text.toString()
-                pickupWindow = windows[pickup_window.selectedIndex]
-                hasProofOfOwnerShip = hasOwnerShip
+
+            val phone: String? = phone_input.text.toString()
+            val email: String? = email_input.text.toString()
+            val firstName: String? = first_name_input.text.toString()
+            val lastName: String? = last_name_input.text.toString()
+
+            if (phone.isNullOrEmpty() || email.isNullOrEmpty() ||
+                firstName.isNullOrEmpty() || lastName.isNullOrEmpty()
+            ) {
+                if (phone.isNullOrEmpty()) {
+                    phone_parent.isErrorEnabled = true
+                    phone_parent.error = "Please provide phone number"
+                }
+                if (email.isNullOrEmpty()) {
+                    email_parent.isErrorEnabled = true
+                    email_parent.error = "Please provide email address"
+                }
+                if (firstName.isNullOrEmpty()) {
+                    first_name_parent.isErrorEnabled = true
+                    first_name_parent.error = "Please provide first name"
+                }
+                if (lastName.isNullOrEmpty()) {
+                    last_name_parent.isErrorEnabled = true
+                    last_name_parent.error = "Please provide last name"
+                }
             }
+
+            order!!.phone = phone
+            order!!.email = email
+            order!!.firstName = firstName
+            order!!.lastName = lastName
+            order!!.pickupWindow = windows[pickup_window.selectedIndex]
+            order!!.hasProofOfOwnerShip = hasOwnerShip
 
             val needsAssembly = if (order!!.needAssembly!!) {
                 "Yes"
@@ -322,10 +372,10 @@ class PersonalDetailsActivity : AppCompatActivity() {
 
     private fun getPrice(order: Order?): Float {
         var currentPrice = 0F
-        var basePrice = 45F
+        val basePrice = 45F
         //Get furniture price
         order!!.furniture!!.forEach { item ->
-            currentPrice += (item.price!!).times(item.count!!)
+            currentPrice += (item.price!!).times(item.count)
         }
         //Get distance price
         currentPrice += (order.distance)!!.price!!

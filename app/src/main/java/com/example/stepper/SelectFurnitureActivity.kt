@@ -158,10 +158,14 @@ class SelectFurnitureActivity : AppCompatActivity() {
     private fun submitData() {
         if (order != null) {
             order!!.furniture = furnitureList
-            val i = Intent(this@SelectFurnitureActivity, SelectGuysActivity::class.java)
-            i.putExtra(Commons.ORDER, order)
-            startActivity(i)
-            overridePendingTransition(R.anim.right_to_left_enter, R.anim.left_to_right_enter)
+            if (furnitureList.isNotEmpty()) {
+                val i = Intent(this@SelectFurnitureActivity, SelectGuysActivity::class.java)
+                i.putExtra(Commons.ORDER, order)
+                startActivity(i)
+                overridePendingTransition(R.anim.right_to_left_enter, R.anim.left_to_right_enter)
+            } else{
+                toast("Please select items to be delivered")
+            }
         }
     }
 
