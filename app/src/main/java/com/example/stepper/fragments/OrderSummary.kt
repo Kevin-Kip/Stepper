@@ -122,6 +122,7 @@ class OrderSummary : BottomSheetDialogFragment() {
                 val requestParams = RequestParams()
                 requestParams.put("payment_method_nonce", paymentMethodNonce.nonce)
                 requestParams.put("amount", order?.price)
+                requestParams.put("order",order)
                 mClient!!.post(
                     Commons.BASE_URL + "/" + Commons.PAYMENT,
                     requestParams,
