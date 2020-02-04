@@ -56,8 +56,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         )
 
         initViewListeners()
-//        initPlaces()
-
         pickup_stairs_input.setItems(stairNames)
         destination_stairs_input.setItems(stairNames)
     }
@@ -84,48 +82,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
-
-//    private fun initPlaces() {
-//        if (!Places.isInitialized()) {
-//            Places.initialize(applicationContext, getString(R.string.google_maps_key))
-//        }
-//
-//        val pickupLocationFragment =
-//            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
-//        pickupLocationFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
-//        pickupLocationFragment.setHint("Pickup Location")
-//
-//        pickupLocationFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-//            override fun onPlaceSelected(place: Place) {
-//                pickupLocation = place.address
-//                val latLng = place.latLng!!
-//                mMap.addMarker(MarkerOptions().position(latLng))
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
-//            }
-//
-//            override fun onError(p0: Status) {
-//
-//            }
-//        })
-//
-//        val destinationLocationFragment =
-//            supportFragmentManager.findFragmentById(R.id.destination_autocomplete_fragment) as AutocompleteSupportFragment
-//        destinationLocationFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
-//        destinationLocationFragment.setHint("Destination Location")
-//
-//        destinationLocationFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-//            override fun onPlaceSelected(place: Place) {
-//                destinationLocation = place.address
-//                val latLng = place.latLng!!
-//                mMap.addMarker(MarkerOptions().position(latLng))
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
-//            }
-//
-//            override fun onError(p0: Status) {
-//
-//            }
-//        })
-//    }
 
     private fun submitData() {
         val order = Order()
